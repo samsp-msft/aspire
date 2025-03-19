@@ -14,6 +14,8 @@ using Aspire.Dashboard.Authentication.OpenIdConnect;
 using Aspire.Dashboard.Authentication.OtlpApiKey;
 using Aspire.Dashboard.Components;
 using Aspire.Dashboard.Configuration;
+using Aspire.Dashboard.MCP;
+using Aspire.Dashboard.MCP_gRPC;
 using Aspire.Dashboard.Model;
 using Aspire.Dashboard.Otlp;
 using Aspire.Dashboard.Otlp.Grpc;
@@ -175,6 +177,10 @@ public sealed class DashboardWebApplication : IAsyncDisposable
             _validationFailures = Array.Empty<string>();
         }
 
+        // HACK HACK HACK
+        // Force off authentication for now so that the MCP Proxy can work
+        dashboardOptions.Otlp.AuthMode = OtlpAuthMode.Unsecured;
+
         ConfigureKestrelEndpoints(builder, dashboardOptions);
 
         var browserHttpsPort = dashboardOptions.Frontend.GetEndpointAddresses().FirstOrDefault(IsHttpsOrNull)?.Port;
@@ -238,6 +244,10 @@ public sealed class DashboardWebApplication : IAsyncDisposable
         builder.Services.AddTransient<OtlpLogsService>();
         builder.Services.AddTransient<OtlpTraceService>();
         builder.Services.AddTransient<OtlpMetricsService>();
+
+        builder.Services.AddTransient<McpService>();
+
+        builder.Services.AddTransient<McpModel>();
 
         builder.Services.AddTransient<TracesViewModel>();
         builder.Services.TryAddEnumerable(ServiceDescriptor.Scoped<IOutgoingPeerResolver, ResourceOutgoingPeerResolver>());
@@ -415,6 +425,7 @@ public sealed class DashboardWebApplication : IAsyncDisposable
         _app.MapGrpcService<OtlpGrpcMetricsService>();
         _app.MapGrpcService<OtlpGrpcTraceService>();
         _app.MapGrpcService<OtlpGrpcLogsService>();
+        _app.MapGrpcService<McpGrpcService>();
 
         _app.MapDashboardApi(dashboardOptions);
     }

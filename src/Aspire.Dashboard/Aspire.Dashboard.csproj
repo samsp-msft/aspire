@@ -32,6 +32,9 @@
       <ProtoRoot>Otlp</ProtoRoot>
     </Protobuf>
 
+    <Protobuf Include="MCP_gRPC\**\*.proto">
+    </Protobuf>
+    
     <Protobuf Include="..\Aspire.Hosting\Dashboard\proto\resource_service.proto">
       <Access>Internal</Access>
       <Link>ResourceService\resource_service.proto</Link>
@@ -42,6 +45,7 @@
   <Target Name="ReturnPackageVersion" Returns="$(PackageVersion)" />
 
   <ItemGroup>
+    <PackageReference Include="Google.Protobuf" />
     <PackageReference Include="Grpc.AspNetCore" />
     <PackageReference Include="Humanizer.Core" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Certificate" />

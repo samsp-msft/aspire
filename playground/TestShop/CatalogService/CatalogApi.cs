@@ -21,6 +21,11 @@ public static class CatalogApi
                 [var first, .., var last] => (first.Id, last.Id)
             };
 
+            if ((new Random()).Next(10) > 8)
+            {
+                throw new DirectoryNotFoundException("The catalog item is not found");
+            }
+
             return new Catalog(
                 firstId,
                 nextId,
@@ -39,12 +44,14 @@ public static class CatalogApi
 
             var path = Path.Combine(environment.ContentRootPath, "Images", item.PictureFileName);
 
-            if (!File.Exists(path))
-            {
-                return Results.NotFound();
-            }
+            throw new FileNotFoundException("Path not found", path);
 
-            return Results.File(path, "image/jpeg");
+            //if (!File.Exists(path))
+            //{
+            //    return Results.NotFound();
+            //}
+
+            //return Results.File(path, "image/jpeg");
         })
         .Produces(404)
         .Produces(200, contentType: "image/jpeg");

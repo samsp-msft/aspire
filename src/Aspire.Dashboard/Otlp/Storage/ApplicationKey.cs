@@ -5,6 +5,27 @@ namespace Aspire.Dashboard.Otlp.Storage;
 
 public readonly record struct ApplicationKey(string Name, string? InstanceId) : IComparable<ApplicationKey>
 {
+    public static ApplicationKey FromResourceName(string resourceName)
+    {
+        var dashIndex = resourceName.IndexOf('-');
+        if (dashIndex == -1)
+        {
+            return new ApplicationKey(resourceName, null);
+        }
+
+        return new ApplicationKey(resourceName.Substring(0, dashIndex), resourceName.Substring(dashIndex + 1));
+    }
+
+    public string GetCompositeName()
+    {
+        if (InstanceId == null)
+        {
+            return Name;
+        }
+
+        return $"{Name}-{InstanceId}";
+    }
+
     public int CompareTo(ApplicationKey other)
     {
         var c = string.Compare(Name, other.Name, StringComparisons.ResourceName);
