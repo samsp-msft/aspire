@@ -65,6 +65,7 @@ public class McpModel
         var data = traces.PagedResult.Items.Select(l => new
         {
             trace_id = l.TraceId,
+            __link = "https://localhost:15877/traces/detail/" + l.TraceId,
             timestamp = l.TimeStamp,
             resources = l.Spans.Select(s => s.Source.Application.ApplicationName).Distinct().ToList(),
             duration = l.Duration,
@@ -93,6 +94,7 @@ public class McpModel
         var data = trace.Spans.Select(s => new
         {
             span_id = s.SpanId,
+            __link = "https://localhost:15877/traces/detail/" + trace.TraceId + "/span/" + s.SpanId,
             parent_span_id = s.ParentSpanId,
             kind = s.Kind.ToString(),
             name = s.Name,
@@ -100,7 +102,9 @@ public class McpModel
             status_message = s.StatusMessage,
             source = s.Source.Application.ApplicationKey.GetCompositeName(),
             destination = GetDestination(s),
-            duration_ms = (int)Math.Round(s.Duration.TotalMilliseconds, 0, MidpointRounding.AwayFromZero)
+            duration_ms = (int)Math.Round(s.Duration.TotalMilliseconds, 0, MidpointRounding.AwayFromZero),
+            attributes = s.Attributes,
+            
         }).ToList();
 
         var traceData = JsonSerializer.Serialize(data);
@@ -264,7 +268,8 @@ public class McpModel
             message = l.Message,
             severity = l.Severity.ToString(),
             resource = l.ApplicationView.Application.ApplicationName,
-            exception = getException(l)
+            exception = getException(l),
+            attributes = l.Attributes
         }).ToList();
 
         var json = JsonSerializer.Serialize(data);

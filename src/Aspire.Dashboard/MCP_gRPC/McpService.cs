@@ -31,6 +31,7 @@ public sealed class McpService
 
         var task = _mcpModel.GetTraces(request.ResourceName, cancellationToken);
         resp.Traces = await task.ConfigureAwait(false);
+        _logger.LogDebug("Response json: {trace}", resp.Traces);
         return resp;
     }
 
@@ -39,6 +40,7 @@ public sealed class McpService
         _logger.LogDebug("GetTraceDetails called. TraceId: {traceId}", request.TraceId);
         var resp = new GetTraceDetailsServiceResponse();
         resp.TraceDetails = _mcpModel.GetTrace(request.TraceId);
+        _logger.LogDebug("Response json: {trace}", resp.TraceDetails);
         return Task.FromResult(resp);
     }
 
@@ -52,6 +54,7 @@ public sealed class McpService
         var resp = new GetStructuredLogsServiceResponse();
         var task = _mcpModel.GetStructuredLogs(request.ResourceName, cancellationToken);
         resp.LogResults = await task.ConfigureAwait(false);
+        _logger.LogDebug("Response json: {logs}", resp.LogResults);
         return resp;
     }
 
@@ -65,6 +68,7 @@ public sealed class McpService
         var resp = new GetConsoleLogsServiceResponse();
         var task = _mcpModel.GetConsoleLogs(request.ResourceName, cancellationToken);
         resp.LogResults = await task.ConfigureAwait(false);
+        _logger.LogDebug("Response json: {logs}", resp.LogResults);
         return resp;
     }
 
@@ -73,6 +77,7 @@ public sealed class McpService
         _logger.LogDebug("GetTraceStructuredLogs called. TraceId: {traceId}", request.TraceId);
         var resp = new GetTraceStructuredLogsServiceResponse();
         resp.LogResults = _mcpModel.GetTraceStructuredLogs(request.TraceId);
+        _logger.LogDebug("Response json: {logs}", resp.LogResults);
         return Task.FromResult(resp);
     }
 
@@ -86,6 +91,7 @@ public sealed class McpService
         var resp = new GetResourceGraphServiceResponse();
         var task = _mcpModel.GetResourceGraph( cancellationToken);
         resp.ResourceGraph = await task.ConfigureAwait(false);
+        _logger.LogDebug("Response json: {graph}", resp.ResourceGraph);
         return resp;
     }
 
